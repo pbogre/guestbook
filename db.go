@@ -14,6 +14,7 @@ type Message struct {
     ID          int
     Name        string
     Content     string
+    RemoteAddr  string
     CreatedAt   time.Time
 }
 
@@ -33,6 +34,7 @@ func initDB() {
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             name        TEXT NOT NULL,
             content     TEXT NOT NULL,
+            remote_addr TEXT NOT NULL UNIQUE,
             created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `); err != nil {
@@ -46,9 +48,9 @@ func getTotalPages() (int, error) {
     if err != nil {
         return 0, err
     }
-    totalPages := int(math.Ceil(float64(totalRows) / 15.0))
 
-    return totalPages, nil
+    totalPages := math.Ceil(float64(totalRows) / 15.0)
+    return int(math.Max(totalPages, 1)), nil // totalPages is never 0
 }
 
 func getMessages(page int) ([]Message, error) {
@@ -77,7 +79,7 @@ func getMessages(page int) ([]Message, error) {
     return messages, nil
 }
 
-func addMessage(name string, content string) error {
-    _, err := db.Exec(`INSERT INTO messages (name, content) VALUES (?, ?)`, name, content)
+func postMessage(name, content, remote_addr string) error {
+    _, err := db.Exec(`INSERT INTO messages (name, content, remote_addr) VALUES (?, ?, ?)`, name, content, remote_addr)
     return err
 }

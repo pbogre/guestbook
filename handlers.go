@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
         "strconv"
+        "net"
+
 	// "github.com/dchest/captcha"
 )
 
@@ -36,16 +38,19 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         http.Error(w, "Failed to get total pages", http.StatusInternalServerError)
         log.Print(err)
+        return
     }
 
     if currentPage < 1 || currentPage > totalPages {
         http.Error(w, "Invalid page number", http.StatusBadRequest)
+        return
     }
 
     messages, err := getMessages(currentPage - 1)
     if err != nil {
         http.Error(w, "Failed to load messages", http.StatusInternalServerError)
         log.Print(err)
+        return
     }
 
     data := map[string]any{
@@ -59,12 +64,13 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func postHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
         http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
     }
 
+    // input sanitization
     name := strings.TrimSpace(r.FormValue("name"))
     content := strings.TrimSpace(r.FormValue("content"))
 
-    // sanitization
     name = html.EscapeString(name)
     content = html.EscapeString(content)
 
@@ -73,7 +79,21 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if err := addMessage(name, content); err != nil {
+    // get only IP address (for unique messages)
+    remoteAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+    if err != nil {
+        http.Error(w, "Failed to save message", http.StatusInternalServerError)
+        log.Print(err)
+        return
+    }
+
+    if err := postMessage(name, content, remoteAddr); err != nil {
+        // each user can only send one message (ip-based)
+        if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+            http.Error(w, "You have already written a message", http.StatusTooManyRequests)
+            log.Print(err)
+            return
+        }
         http.Error(w, "Failed to save message", http.StatusInternalServerError)
         log.Print(err)
         return
