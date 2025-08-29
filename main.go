@@ -39,7 +39,9 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 // ratelimit middleware
 func rateLimitMiddleware(next http.Handler) http.Handler {
-    limiter := rate.NewLimiter(1.0 / 5.0, 2) // 1 req / 5 seconds ratelimit, max burst of 2
+    rateLimit := 1.0 / float64(GuestbookConfig.EntriesPerPage)
+    burstLimit := GuestbookConfig.GlobalBurstLimit
+    limiter := rate.NewLimiter(rate.Limit(rateLimit), burstLimit)
 
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         if !limiter.Allow() {
@@ -49,9 +51,9 @@ func rateLimitMiddleware(next http.Handler) http.Handler {
     })
 }
 
-
 func main() {
-    initDB()
+    initDB("./data/guestbook.db")
+    loadConfig("./config/guestbook.yml")
     loadTemplates()
 
     mux := http.NewServeMux()

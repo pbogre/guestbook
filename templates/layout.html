@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Guestbook</title>
+    <title>{{.Title}}</title>
     <link rel="stylesheet" href="/static/water.css">
 </head>
 <body>
-    <h1><a href="/">Guestbook</a></h1>
+    <h1><a href="/">{{.Title}}</a></h1>
     {{if .CanWrite}}
     {{template "form" .}}
     {{end}}

@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"log"
-	"strconv"
 	"time"
         "math"
 
@@ -20,10 +19,10 @@ type Message struct {
 
 var db *sql.DB
 
-func initDB() {
+func initDB(path string) {
     // try to open sqlite db
     var err error
-    db, err = sql.Open("sqlite", "./data/guestbook.db")
+    db, err = sql.Open("sqlite", path)
     if err != nil {
         log.Fatal(err)
     }
@@ -49,7 +48,7 @@ func getTotalPages() (int, error) {
         return 0, err
     }
 
-    totalPages := math.Ceil(float64(totalRows) / 15.0)
+    totalPages := math.Ceil(float64(totalRows) / float64(GuestbookConfig.EntriesPerPage))
     return int(math.Max(totalPages, 1)), nil // totalPages is never 0
 }
 
@@ -65,14 +64,15 @@ func canRemoteAddrWrite(remoteAddr string) (bool, error) {
 }
 
 func getMessages(page int) ([]Message, error) {
-    var offset int = page * 15 // first page is 0
+    entriesPerPage := GuestbookConfig.EntriesPerPage
+    var offset int = page * entriesPerPage // first page is 0
 
     rows, err := db.Query(`
         SELECT id, name, content, created_at
         FROM messages
         ORDER BY created_at DESC
-        LIMIT 15
-        OFFSET ` + strconv.Itoa(offset))
+        LIMIT ?
+        OFFSET ?`, entriesPerPage, offset)
     if err != nil {
         return nil, err
     }

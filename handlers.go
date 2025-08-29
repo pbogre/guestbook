@@ -71,6 +71,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
     canWrite, err := canRemoteAddrWrite(remoteAddr)
 
     data := map[string]any{
+        "Title": GuestbookConfig.Title,
         "CurrentPage": currentPage,
         "TotalPages": totalPages,
         "Messages": messages,
