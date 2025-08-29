@@ -1,0 +1,35 @@
+{{define "index.html"}}
+<form action="/post" method="POST">
+    <label>Name</label>
+    <input type="text" name="name" value="Anonymous Guest" placeholder="Anonymous Guest">
+
+    <label class="required">Message</label>
+    <textarea name="content" placeholder="I was here" required></textarea>
+
+    <button type="submit">Submit</button>
+</form>
+
+<ul>
+    {{range .Messages}}
+        <li>
+            <strong>{{.Name}}</strong>: {{.Content}}
+            <em>({{.CreatedAt.Format "Jan 2, 2006 @ 15:04"}})</em>
+        </li>
+    {{else}}
+        <li>
+            No messages yet! Write one yourself
+        </li>
+    {{end}}
+</ul>
+
+{{if gt .CurrentPage 1}}
+    <a href="/?p={{sub .CurrentPage 1}}"><</a>
+{{end}}
+
+Page {{.CurrentPage}} of {{.TotalPages}}
+
+{{if lt .CurrentPage .TotalPages}}
+    <a href="/?p={{add .CurrentPage 1}}">></a>
+{{end}}
+
+{{end}}
