@@ -1,0 +1,48 @@
+{{define "form"}}
+
+<div>
+    <button id="dialog-trigger" type="button">Leave a message</button>
+</div>
+
+<dialog id="dialog">
+<header>Leave a message</header>
+<form action="/post" method="POST">
+    <label class="required">Name</label>
+    <input type="text" name="name" value="Anonymous Guest" maxlength="22" placeholder="Anonymous Guest">
+
+    <label class="required">Message</label>
+    <textarea name="content" placeholder="I was here" maxlength="250" required></textarea>
+
+    <button type="submit">Submit</button>
+    <button type="button" id="dialog-close">Close</button>
+</form>
+</dialog>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const dialog = document.getElementById("dialog");
+    const trigger = document.getElementById("dialog-trigger");
+    const closeButton = document.getElementById("dialog-close");
+
+    trigger.addEventListener("click", function() {
+        dialog.showModal();
+    });
+
+    dialog.addEventListener("click", function(event) {
+        const rect = dialog.getBoundingClientRect();
+        const isInDialog = (
+            rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX && event.clientX <= rect.left + rect.width
+        );
+        if (!isInDialog) {
+            dialog.close();
+        }
+    });
+
+    closeButton.addEventListener("click", () => {
+        dialog.close();
+    });
+});
+</script>
+
+{{end}}

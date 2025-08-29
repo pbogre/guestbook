@@ -53,6 +53,17 @@ func getTotalPages() (int, error) {
     return int(math.Max(totalPages, 1)), nil // totalPages is never 0
 }
 
+func canRemoteAddrWrite(remoteAddr string) (bool, error) {
+    var exists int
+    err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM messages WHERE remote_addr = ?)", remoteAddr).Scan(&exists)
+    if err != nil {
+        log.Print(err)
+        return false, err
+    }
+
+    return exists == 0, nil
+}
+
 func getMessages(page int) ([]Message, error) {
     var offset int = page * 15 // first page is 0
 

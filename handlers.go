@@ -28,12 +28,20 @@ func loadTemplates() {
     templates = template.Must(templates.ParseFiles(tmplFiles...))
 }
 
+func stripRemoteAddr(remoteAddr string) (string, error) {
+    // get only IP address (for unique messages) instead of IP:port
+    remoteAddr, _, err := net.SplitHostPort(remoteAddr)
+    return remoteAddr, err
+}
+
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+    // CurrentPage
     currentPage, err := strconv.Atoi(r.URL.Query().Get("p"))
     if err != nil {
         currentPage = 1
     }
 
+    // TotalPages
     totalPages, err := getTotalPages() 
     if err != nil {
         http.Error(w, "Failed to get total pages", http.StatusInternalServerError)
@@ -46,6 +54,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // Messages
     messages, err := getMessages(currentPage - 1)
     if err != nil {
         http.Error(w, "Failed to load messages", http.StatusInternalServerError)
@@ -53,10 +62,20 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // CanWrite
+    remoteAddr, err := stripRemoteAddr(r.RemoteAddr)
+    if err != nil {
+        http.Error(w, "Failed to save message", http.StatusInternalServerError)
+        log.Print(err)
+        return
+    }
+    canWrite, err := canRemoteAddrWrite(remoteAddr)
+
     data := map[string]any{
-        "Messages": messages,
         "CurrentPage": currentPage,
         "TotalPages": totalPages,
+        "Messages": messages,
+        "CanWrite": canWrite,
     }
     templates.ExecuteTemplate(w, "layout.html", data)
 }
@@ -84,8 +103,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // get only IP address (for unique messages)
-    remoteAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+    remoteAddr, err := stripRemoteAddr(r.RemoteAddr)
     if err != nil {
         http.Error(w, "Failed to save message", http.StatusInternalServerError)
         log.Print(err)

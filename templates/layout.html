@@ -6,7 +6,11 @@
     <link rel="stylesheet" href="/static/water.css">
 </head>
 <body>
-    <h1>Guestbook</h1>
-    {{template "index.html" .}}
+    <h1><a href="/">Guestbook</a></h1>
+    {{if .CanWrite}}
+    {{template "form" .}}
+    {{end}}
+
+    {{template "guestbook" .}}
 </body>
 </html>
