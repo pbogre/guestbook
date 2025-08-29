@@ -27,9 +27,21 @@ func loadTemplates() {
     templates = template.Must(templates.ParseFiles(tmplFiles...))
 }
 
-func stripRemoteAddr(remoteAddr string) (string, error) {
-    // get only IP address (for unique messages) instead of IP:port
-    remoteAddr, _, err := net.SplitHostPort(remoteAddr)
+func getRealRemoteAddr(r *http.Request) (string, error) {
+    // first try x-forwarded-for header
+    remoteAddr := r.Header.Get("X-Forwarded-For")
+    if remoteAddr != "" {
+        return strings.Split(remoteAddr, ",")[0], nil
+    }
+
+    // if not, try x-real-ip
+    remoteAddr = r.Header.Get("X-Real-IP")
+    if remoteAddr != "" {
+        return remoteAddr, nil
+    }
+
+    // try request's remote address as last resort
+    remoteAddr, _, err := net.SplitHostPort(r.RemoteAddr)
     return remoteAddr, err
 }
 
@@ -62,7 +74,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     // CanWrite
-    remoteAddr, err := stripRemoteAddr(r.RemoteAddr)
+    remoteAddr, err := getRealRemoteAddr(r)
     if err != nil {
         http.Error(w, "Failed to save message", http.StatusInternalServerError)
         log.Print(err)
@@ -100,7 +112,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    remoteAddr, err := stripRemoteAddr(r.RemoteAddr)
+    remoteAddr, err := getRealRemoteAddr(r)
     if err != nil {
         http.Error(w, "Failed to save message", http.StatusInternalServerError)
         log.Print(err)

@@ -58,5 +58,31 @@ are happy with the default values, you can simply not mount
 anything in your `docker-compose.yml` and Guestbook will
 use the default config.
 
+## Troubleshooting
+
+### All requests coming from same IP
+
+This means that the unique remote address computation is not
+working properly. This is most likely due to how your setup
+works. For example, if you are using nginx as reverse proxy,
+you should make sure to add these lines to your configuration:
+
+```nginx
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+```
+
+Also, if you are running nginx in docker, you should make sure
+that it has the real IP information in the first place. You 
+can do so by adding this line to your nginx's `docker-compose.yml`:
+
+```yml
+network_mode: "host"
+```
+
+You would have to do similar changes for other reverse proxies such 
+as Caddy or Traefik.
+
 ## Acknowledgements
 - [water.css](https://watercss.kognise.dev/)
