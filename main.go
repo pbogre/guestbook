@@ -52,8 +52,8 @@ func rateLimitMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-    initDB("./data/guestbook.db")
-    loadConfig("./config/guestbook.yml")
+    initDB("/data/guestbook.db")
+    loadConfig("/config/guestbook.yml")
     loadTemplates()
 
     mux := http.NewServeMux()
