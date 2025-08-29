@@ -60,5 +60,10 @@ globalBurstLimit: 2
 entriesPerPage: 10
 ```
 
+You can mount your own config to the container, or if you
+are happy with the default values, you can simply not mount
+anything in your `docker-compose.yml` and Guestbook will
+use the default config.
+
 ## Acknowledgements
 - [water.css](https://watercss.kognise.dev/)
