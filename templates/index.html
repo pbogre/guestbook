@@ -1,10 +1,10 @@
 {{define "index.html"}}
 <form action="/post" method="POST">
     <label class="required">Name</label>
-    <input type="text" name="name" value="Anonymous Guest" placeholder="Anonymous Guest">
+    <input type="text" name="name" value="Anonymous Guest" maxlength="22" placeholder="Anonymous Guest">
 
     <label class="required">Message</label>
-    <textarea name="content" placeholder="I was here" required></textarea>
+    <textarea name="content" placeholder="I was here" maxlength="250" required></textarea>
 
     <button type="submit">Submit</button>
 </form>

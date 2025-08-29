@@ -79,6 +79,11 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    if len(name) > 22 || len(content) > 250 {
+        http.Error(w, "Name or content exceed maximum length", http.StatusBadRequest)
+        return
+    }
+
     // get only IP address (for unique messages)
     remoteAddr, _, err := net.SplitHostPort(r.RemoteAddr)
     if err != nil {
