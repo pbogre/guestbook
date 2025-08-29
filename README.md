@@ -9,6 +9,8 @@ A simple self-hostable guestbook for website interactivity (very early version)
     - [Using docker compose](#using-docker-compose)
     - [Manually (dev)](#manually-dev)
 - [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+    - [All requests coming from same IP](#all-requests-coming-from-same-ip)
 - [Acknowledgements](#acknowledgements)
 
 ## Features
