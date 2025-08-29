@@ -9,19 +9,27 @@
     <button type="submit">Submit</button>
 </form>
 
-<ul>
-    {{range .Messages}}
-        <li>
-            <strong>{{.Name}}</strong>: {{.Content}}
-            <em>({{.CreatedAt.Format "Jan 2, 2006 @ 15:04"}})</em>
-        </li>
-    {{else}}
-        <li>
-            No messages yet! Write one yourself
-        </li>
-    {{end}}
-</ul>
+{{if .Messages}}
+<table>
+    <thead>
+        <tr>
+            <th style="width: 15%">Name</th>
+            <th>Message</th>
+            <th style="width: 15%">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Messages}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Content}}</td>
+                <td>{{.CreatedAt.Format "Jan 2, 2006"}}</td>
+            </tr>
+        {{end}}
+    </tbody>
+</table>
 
+<div style="text-align: center">
 {{if gt .CurrentPage 1}}
     <a href="/?p={{sub .CurrentPage 1}}"><</a>
 {{end}}
@@ -30,6 +38,11 @@ Page {{.CurrentPage}} of {{.TotalPages}}
 
 {{if lt .CurrentPage .TotalPages}}
     <a href="/?p={{add .CurrentPage 1}}">></a>
+{{end}}
+</div>
+
+{{else}}
+<p>No messages yet! Feel free to write one yourself</p>
 {{end}}
 
 {{end}}
