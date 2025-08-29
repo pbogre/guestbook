@@ -2,6 +2,16 @@
 
 A simple self-hostable guestbook for website interactivity (very early version)
 
+## Table of Contents
+
+- [Features](#features)
+- [To do](#to-do)
+- [Installation](#installation)
+- [Configuration](#configuration)
+    - [Using docker compose](#using-docker-compose)
+    - [Manually (dev)](#manually-dev)
+- [Acknowledgements](#acknowledgements)
+
 ## Features
 - 📝 Promote interactivity by letting guests leave guestbook-like messages
 - 📜 Public history of messages left by guests
@@ -39,6 +49,16 @@ services:
 1. `git clone https://github.com/pbogre/guestbook`
 2. `go mod tidy`
 3. `go run .`
+
+## Configuration
+
+Default `guestbook.yml` config:
+```yml
+title: "Guestbook"
+globalRateLimit: 5 # 1 request every x seconds (int only)
+globalBurstLimit: 2
+entriesPerPage: 10
+```
 
 ## Acknowledgements
 - [water.css](https://watercss.kognise.dev/)
