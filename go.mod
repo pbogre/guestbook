@@ -2,7 +2,10 @@ module guestbook
 
 go 1.25.0
 
-require modernc.org/sqlite v1.38.2
+require (
+	golang.org/x/time v0.12.0
+	modernc.org/sqlite v1.38.2
+)
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect

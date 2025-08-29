@@ -5,6 +5,8 @@ import (
     "log"
     "net/http"
     "time"
+
+    "golang.org/x/time/rate"
 )
 
 // logging middleware to log all reqs.
@@ -35,6 +37,19 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// ratelimit middleware
+func rateLimitMiddleware(next http.Handler) http.Handler {
+    limiter := rate.NewLimiter(1.0 / 5.0, 2) // 1 req / 5 seconds ratelimit, max burst of 2
+
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if !limiter.Allow() {
+            http.Error(w, "The server is handling too many requests, please wait a few minutes", http.StatusTooManyRequests)
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+
+
 func main() {
     initDB()
     loadTemplates()
@@ -43,7 +58,7 @@ func main() {
 
     // routes
     mux.HandleFunc("/", rootHandler)
-    mux.HandleFunc("/post", postHandler)
+    mux.Handle("/post", rateLimitMiddleware(http.HandlerFunc(postHandler)))
     mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
     loggedMux := loggingMiddleware(mux)
