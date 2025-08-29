@@ -7,9 +7,9 @@ A simple self-hostable guestbook for website interactivity (very early version)
 - [Features](#features)
 - [To do](#to-do)
 - [Installation](#installation)
-- [Configuration](#configuration)
     - [Using docker compose](#using-docker-compose)
     - [Manually (dev)](#manually-dev)
+- [Configuration](#configuration)
 - [Acknowledgements](#acknowledgements)
 
 ## Features
