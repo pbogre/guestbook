@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html"
 	"html/template"
 	"log"
 	"net/http"
@@ -89,9 +88,6 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
     // input sanitization
     name := strings.TrimSpace(r.FormValue("name"))
     content := strings.TrimSpace(r.FormValue("content"))
-
-    name = html.EscapeString(name)
-    content = html.EscapeString(content)
 
     if name == "" || content == "" {
         http.Error(w, "Name and content are required", http.StatusBadRequest)
