@@ -5,7 +5,6 @@ A simple self-hostable guestbook for website interactivity (very early version)
 ## Table of Contents
 
 - [Features](#features)
-- [To do](#to-do)
 - [Installation](#installation)
     - [Using docker compose](#using-docker-compose)
     - [Manually (dev)](#manually-dev)
@@ -19,12 +18,6 @@ A simple self-hostable guestbook for website interactivity (very early version)
 - ⚙️  Fully configurable (WIP)
 - 🙅 Global rate limiting feature
 - 🪶 Extremely lightweight, responsive, and snappy interface
-
-## To do
-- [x] ~~User configuration (rate limits, unique messages, page size, ...)~~
-- [x] ~~Docker image~~
-- [ ] CI/CD github actions
-- [ ] Skeuomorphic UI?
 
 ## Installation
 
