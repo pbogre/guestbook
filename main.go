@@ -42,7 +42,7 @@ func rateLimitMiddleware(next http.Handler) http.Handler {
     limiter := rate.NewLimiter(rate.Limit(GuestbookConfig.RateLimit), GuestbookConfig.BurstLimit)
 
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if !limiter.Allow() {
+        if GuestbookConfig.UseRateLimit && !limiter.Allow() {
             http.Error(w, "The server is handling too many requests, please wait a few minutes", http.StatusTooManyRequests)
         }
         next.ServeHTTP(w, r)

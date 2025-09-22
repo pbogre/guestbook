@@ -8,6 +8,7 @@ import (
 
 type Config struct {
     Title               string
+    UseRateLimit        bool
     RateLimit           float64
     BurstLimit          int
     EntriesPerPage      int
@@ -18,6 +19,7 @@ var GuestbookConfig Config
 
 func loadArguments() {
     title := flag.String("title", getenvDefault("GB_TITLE", "Guestbook"), "Title displayed at the top of the webpage")
+    useRateLimit := flag.Bool("use-rate-limit", mustParseBool(getenvDefault("GB_USE_RATELIMIT", "true")), "Whether or not to use ratelimiting")
     rateLimit := flag.Float64("rate-limit", mustParseFloat(getenvDefault("GB_RATELIMIT", "0.2")), "Rate limit of requests per second")
     burstLimit := flag.Int("burst-limit", mustParseInt(getenvDefault("GB_BURSTLIMIT", "2")), "Maximum permitted burst of requests")
     entriesPerPage := flag.Int("entries-per-page", mustParseInt(getenvDefault("GB_ENTRIES_PER_PAGE", "10")), "Number of entries displayed per page")
@@ -26,6 +28,7 @@ func loadArguments() {
     flag.Parse()
 
     GuestbookConfig.Title = *title
+    GuestbookConfig.UseRateLimit = *useRateLimit
     GuestbookConfig.RateLimit = *rateLimit
     GuestbookConfig.BurstLimit = *burstLimit
     GuestbookConfig.EntriesPerPage = *entriesPerPage
@@ -46,5 +49,10 @@ func mustParseInt(s string) int {
 
 func mustParseFloat(s string) float64 {
     v, _ := strconv.ParseFloat(s, 64)
+    return v
+}
+
+func mustParseBool(s string) bool {
+    v, _ := strconv.ParseBool(s)
     return v
 }
