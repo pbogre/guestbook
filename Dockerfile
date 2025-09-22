@@ -8,8 +8,6 @@ RUN go env && go mod download -x
 
 COPY . .
 
-RUN ls config
-
 ENV CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
@@ -19,16 +17,19 @@ RUN go build -ldflags="-s -w" -o /app/guestbook .
 # FINAL
 FROM scratch AS final
 
+# environment variables
+ENV PORT=8080
+ENV GB_TITLE=Guestbook
+ENV GB_RATELIMIT=0.2
+ENV GB_BURSTLIMIT=2
+ENV GB_ENTRIES_PER_PAGE=10
+
 COPY --from=builder /app/guestbook /guestbook
 COPY --from=builder /src/templates /templates
 COPY --from=builder /src/static /static
-COPY --from=builder /src/config /config
 
 VOLUME [ "/data" ]
 
-EXPOSE 8080
-
-# default environment variables
-ENV PORT=8080
+EXPOSE ${PORT}/tcp
 
 CMD ["/guestbook"]

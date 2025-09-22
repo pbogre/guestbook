@@ -8,7 +8,6 @@ A simple self-hostable guestbook for website interactivity (very early version)
 - [Installation](#installation)
     - [Using docker compose](#using-docker-compose)
     - [Manually (dev)](#manually-dev)
-- [Configuration](#configuration)
 - [Troubleshooting](#troubleshooting)
     - [All requests coming from same IP](#all-requests-coming-from-same-ip)
 - [Acknowledgements](#acknowledgements)
@@ -32,10 +31,13 @@ services:
     image: pbogre/guestbook:latest
     volumes:
       - /path/to/data:/data
-      - /path/to/config/guestbook.yml:/config/guestbook.yml:ro
     restart: unless-stopped
     environment:
-      PORT: 8080 # 8080 by default
+      PORT: 8080                # default: 8080
+      GB_TITLE: My Title        # default: Guestbook
+      GB_RATELIMIT: 0.16        # default: 0.2 (one per 5 seconds)
+      GB_BURSTLIMIT: 2          # default: 2 (max burst of requests)
+      GB_ENTRIES_PER_PAGE: 20   # default: 10
     ports:
       - 8080:8080
 ```
@@ -43,22 +45,8 @@ services:
 ### Manually (dev)
 1. `git clone https://github.com/pbogre/guestbook`
 2. `go mod tidy`
-3. `go run .`
-
-## Configuration
-
-Default `guestbook.yml` config:
-```yml
-title: "Guestbook"
-globalRateLimit: 5 # 1 request every x seconds (int only)
-globalBurstLimit: 2
-entriesPerPage: 10
-```
-
-You can mount your own config to the container, or if you
-are happy with the default values, you can simply not mount
-anything in your `docker-compose.yml` and Guestbook will
-use the default config.
+3. Manually update the database file path in `main.go`
+4. `go run .`
 
 ## Troubleshooting
 

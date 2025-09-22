@@ -1,4 +1,0 @@
-title: "Guestbook"
-globalRateLimit: 5 # 1 request every x seconds (int only)
-globalBurstLimit: 2
-entriesPerPage: 10
