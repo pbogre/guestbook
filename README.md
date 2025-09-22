@@ -35,6 +35,7 @@ services:
     environment:
       PORT: 8080                # default: 8080
       GB_TITLE: My Title        # default: Guestbook
+      GB_FOOTER: <b>hey</b>     # default: ""
       GB_RATELIMIT: 0.16        # default: 0.2 (one per 5 seconds)
       GB_BURSTLIMIT: 2          # default: 2 (max burst of requests)
       GB_ENTRIES_PER_PAGE: 20   # default: 10

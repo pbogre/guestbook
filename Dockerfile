@@ -20,10 +20,11 @@ FROM scratch AS final
 # environment variables
 ENV PORT=8080
 ENV GB_TITLE=Guestbook
+ENV GB_FOOTER=
+ENV GB_ENTRIES_PER_PAGE=10
 ENV GB_USE_RATELIMIT=true
 ENV GB_RATELIMIT=0.2
 ENV GB_BURSTLIMIT=2
-ENV GB_ENTRIES_PER_PAGE=10
 
 COPY --from=builder /app/guestbook /guestbook
 COPY --from=builder /src/templates /templates

@@ -12,5 +12,9 @@
     {{end}}
 
     {{template "guestbook" .}}
+
+    {{if .Footer}}
+    <footer>{{.Footer}}</footer>
+    {{end}}
 </body>
 </html>
