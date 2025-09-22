@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>{{.Title}}</title>
     <link rel="stylesheet" href="/static/water.css">
+    {{if .PaperCSS}}
+        <link rel="stylesheet" href="/static/paper.css">
+    {{end}}
 </head>
 <body>
     <h1><a href="/">{{.Title}}</a></h1>

@@ -85,6 +85,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
     data := map[string]any{
         "Title": GuestbookConfig.Title,
         "Footer": GuestbookConfig.Footer,
+        "PaperCSS": GuestbookConfig.PaperCSS,
         "CurrentPage": currentPage,
         "TotalPages": totalPages,
         "Messages": messages,

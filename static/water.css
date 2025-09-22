@@ -4,6 +4,13 @@
  * if a system-wide theme preference is set on the user's device.
  */
 
+/* START custom css added for Guestbook */
+.pagination {
+    margin-top: 1rem;
+    text-align: center;
+}
+/* END */
+
 :root {
   --background-body: #fff;
   --background: #efefef;

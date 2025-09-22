@@ -11,6 +11,7 @@ type Config struct {
     Title               string
     Footer              template.HTML
     EntriesPerPage      int
+    PaperCSS            bool
     UseRateLimit        bool
     RateLimit           float64
     BurstLimit          int
@@ -22,6 +23,7 @@ var GuestbookConfig Config
 func loadArguments() {
     title := flag.String("title", getenvDefault("GB_TITLE", "Guestbook"), "Title displayed at the top of the webpage")
     footer := flag.String("footer", getenvDefault("GB_FOOTER", ""), "Custom footer at the bottom of the webpage")
+    paperCSS := flag.Bool("paper-css", mustParseBool(getenvDefault("GB_PAPER_CSS", "false")), "Whether or not to use paper-like styling")
     entriesPerPage := flag.Int("entries-per-page", mustParseInt(getenvDefault("GB_ENTRIES_PER_PAGE", "10")), "Number of entries displayed per page")
     useRateLimit := flag.Bool("use-rate-limit", mustParseBool(getenvDefault("GB_USE_RATELIMIT", "true")), "Whether or not to use ratelimiting")
     rateLimit := flag.Float64("rate-limit", mustParseFloat(getenvDefault("GB_RATELIMIT", "0.2")), "Rate limit of requests per second")
@@ -32,6 +34,7 @@ func loadArguments() {
 
     GuestbookConfig.Title = *title
     GuestbookConfig.Footer = template.HTML(*footer)
+    GuestbookConfig.PaperCSS = *paperCSS
     GuestbookConfig.EntriesPerPage = *entriesPerPage
     GuestbookConfig.UseRateLimit = *useRateLimit
     GuestbookConfig.RateLimit = *rateLimit
